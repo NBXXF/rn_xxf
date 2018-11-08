@@ -1,25 +1,21 @@
 {
   "name": "rn_xxf",
-  "version": "1.0.0",
-  "private": false,
+  "version": "1.1.1",
+  "description": "rn_xxf",
+  "main": "./index.ts",
+  "types": "xxf_publish/index.d.ts",
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "react": "16.6.0-alpha.8af6728",
-    "react-native": "0.57.4",
-    "rxjs": "^6.3.3"
-  },
-  "devDependencies": {
-    "typescript": "^3.1.3",
-    "react-native-typescript-transformer": "^1.2.10",
-    "babel-jest": "23.6.0",
-    "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.49.0",
-    "react-test-renderer": "16.6.0-alpha.8af6728"
-  },
+  "author": "xxf_xuanyouwu",
+  "license": "ISC",
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "files": [
+    "xxf_base",
+    "xxf_http",
+    "index.ts",
+    "README.md"
+  ]
 }
