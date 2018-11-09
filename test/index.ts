@@ -25,13 +25,14 @@ export {
 }
 
 import {AndroidUtils, OnAndroidBackPressListener} from './xxf_utils/AndroidUtils'
-import {StorageUtils} from './xxf_utils/StorageUtils'
-import {RAUtils} from './xxf_utils/RAUtils'
 
 export {
     AndroidUtils,
-    OnAndroidBackPressListener,
-    StorageUtils,
-    RAUtils
+    OnAndroidBackPressListener
 }
 
+import {AppRegistry} from 'react-native';
+import App from './App';
+import {name as appName} from './app.json';
+
+AppRegistry.registerComponent(appName, () => App);

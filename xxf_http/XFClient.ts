@@ -22,25 +22,20 @@ const mapResponse = (x: AjaxResponse, index: number) => {
 };
 
 export class XFClient {
-    private builder: XFClientBuilder;
+    protected builder: XFClientBuilder;
 
     constructor(builder: XFClientBuilder) {
         this.builder = builder;
     }
 
-    getDefaultObservable<T>(method: string, url: string, body?: any, headers?: Map<string, any>): Observable<T> {
-        let headerMap: Map<string, any> = new Map<string, any>(this.builder.headers);
-        if (headers) {
-            for (let [key, value] of headers) {
-                headerMap.set(key, value);
-            }
-        }
+    protected getDefaultObservable<T>(method: string, url: string, body?: any, headers?: Object): Observable<T> {
+        let newHeaders = headers ? Object.assign({}, this.builder.headers, headers) : Object.assign({}, this.builder.headers);
         return new AjaxObservable<AjaxResponse>(
             {
                 method: method,
                 url: url,
                 body: body,
-                headers: headerMap,
+                headers: newHeaders,
                 timeout: this.builder.connectTimeout
             })
             .pipe(
@@ -55,7 +50,7 @@ export class XFClient {
      * @param {Object} headers//
      * @returns {Observable<T>}
      */
-    public get<T>(path: string, param?: Map<string, any>, headers?: Map<string, any>): Observable<T> {
+    public get<T>(path: string, param?: Map<string, any>, headers?: Object): Observable<T> {
         let url: string = XFUtils.getMergeUrl(this.builder.baseUrl, path);
         if (param) {
             url = XFUtils.getUrlWithParam(url, param);
@@ -71,7 +66,7 @@ export class XFClient {
      * @param {Map<string, any>} headers
      * @returns {Observable<T>}
      */
-    public post<T>(path: string, body?: any, headers?: Map<string, any>): Observable<T> {
+    public post<T>(path: string, body?: any, headers?: Object): Observable<T> {
         let url: string = XFUtils.getMergeUrl(this.builder.baseUrl, path);
         return this.getDefaultObservable('POST', url, body, headers);
     }
@@ -83,7 +78,7 @@ export class XFClient {
      * @param {Map<string, any>} headers
      * @returns {Observable<T>}
      */
-    public delete<T>(path: string, param?: Map<string, any>, headers?: Map<string, any>): Observable<T> {
+    public delete<T>(path: string, param?: Map<string, any>, headers?: Object): Observable<T> {
         let url: string = XFUtils.getMergeUrl(this.builder.baseUrl, path);
         if (param) {
             url = XFUtils.getUrlWithParam(url, param);
@@ -98,7 +93,7 @@ export class XFClient {
      * @param {Map<string, any>} headers
      * @returns {Observable<T>}
      */
-    public put<T>(path: string, body?: any, headers?: Map<string, any>): Observable<T> {
+    public put<T>(path: string, body?: any, headers?: Object): Observable<T> {
         let url: string = XFUtils.getMergeUrl(this.builder.baseUrl, path);
         return this.getDefaultObservable('PUT', url, body, headers);
     }
@@ -110,7 +105,7 @@ export class XFClient {
      * @param {Map<string, any>} headers
      * @returns {Observable<T>}
      */
-    public patch<T>(path: string, body?: any, headers?: Map<string, any>): Observable<T> {
+    public patch<T>(path: string, body?: any, headers?: Object): Observable<T> {
         let url: string = XFUtils.getMergeUrl(this.builder.baseUrl, path);
         return this.getDefaultObservable('PATCH', url, body, headers);
     }

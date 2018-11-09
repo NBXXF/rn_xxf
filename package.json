@@ -1,11 +1,12 @@
 {
   "name": "rn_xxf",
-  "version": "1.1.1",
+  "version": "1.1.9",
   "description": "rn_xxf",
   "main": "./index.ts",
-  "types": "xxf_publish/index.d.ts",
+  "types": "/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
   },
   "author": "xxf_xuanyouwu",
   "license": "ISC",
@@ -15,6 +16,8 @@
   "files": [
     "xxf_base",
     "xxf_http",
+    "xxf_component",
+    "xxf_utils",
     "index.ts",
     "README.md"
   ]

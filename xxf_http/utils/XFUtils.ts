@@ -33,4 +33,18 @@ export default class XFUtils {
         }
         return `${url}?${paramUrl}`;
     }
+
+    /**
+     * map转换对象
+     * @param {Map<string, any>} strMap
+     * @returns {Object}
+     */
+    public static mapToObj(strMap: Map<string, any>): object {
+        let obj = Object.create(null);
+        for (let [k, v] of strMap) {
+            obj[k] = v;
+        }
+        return obj;
+    }
+
 }

@@ -35,8 +35,8 @@ export default class App extends Component<Props, State> {
                     (item: Address) => {
                         console.log('xxx:' + JSON.stringify(item));
                         this.setState({
-                            //text: 'res:' + JSON.stringify(item),
-                            text: 'res:' + item.level,
+                            text: 'res:' + JSON.stringify(item),
+                           // text: 'res:' + item.level,
                         })
                     },
                 error: e => {

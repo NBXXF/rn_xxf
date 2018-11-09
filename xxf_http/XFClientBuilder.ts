@@ -9,7 +9,11 @@ import {Interceptor} from "./Interceptor";
 export class XFClientBuilder {
     public baseUrl: string;
     //public interceptor: Interceptor;
-    public headers: Map<string, any> = new Map<string, any>();
+    /**
+     *  //默认json转换
+     * @type {{Content-Type: string}}
+     */
+    public headers: Object = {'Content-Type': 'application/json;charset=utf-8'};
     /**
      * 默认5s
      * @type {number}
@@ -36,8 +40,10 @@ export class XFClientBuilder {
      * @param value
      * @returns {XFClientBuilder}
      */
-    header(key: string, value: any): XFClientBuilder {
-        this.headers.set(key, value);
+    header(header: Object): XFClientBuilder {
+        if (header) {
+            this.headers = Object.assign(this.headers, header);
+        }
         return this;
     }
 
