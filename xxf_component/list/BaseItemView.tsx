@@ -12,7 +12,7 @@ export interface BaseItemProps<T> {
     /**
      * item点击事件
      */
-    itemClick?: (index: number, t: T, itemInfo: ListRenderItemInfo<T>) => {};
+    itemClick?: (index: number, t: T, itemInfo: ListRenderItemInfo<T>) => void;
 }
 
 /**
@@ -20,7 +20,7 @@ export interface BaseItemProps<T> {
  * @Description 转为flatlist,listview 设计的item布局适配,规范参数和自动解析参数
  * @Company Beijing dsb
  */
-export class BaseItemView<T, P extends BaseItemProps<T>, S>
+export abstract class BaseItemView<T, P extends BaseItemProps<T>, S>
     extends React.Component<P, S> {
 
     protected itemInfo: ListRenderItemInfo<T>;
@@ -62,7 +62,7 @@ export class BaseItemView<T, P extends BaseItemProps<T>, S>
      * @param {ListRenderItemInfo<T>} itemInfo
      */
     protected onItemClick(index: number, t: T, itemInfo: ListRenderItemInfo<T>): void {
-        if (!this.itemClick) {
+        if (this.itemClick) {
             this.itemClick(index, t, itemInfo);
         }
     }
