@@ -15,6 +15,11 @@ export class XFClientBuilder {
      */
     public headers: Object = {'Content-Type': 'application/json;charset=utf-8'};
     /**
+     * 拦截器
+     * @type {Array}
+     */
+    public interceptor: any = null;
+    /**
      * 默认5s
      * @type {number}
      */
@@ -25,12 +30,12 @@ export class XFClientBuilder {
     }
 
     /**
-     * 添加拦截器
+     * 设置拦截器
      * @param {Interceptor} interceptor
      * @returns {XFClientBuilder}
      */
-    addInterceptor(interceptor: Interceptor): XFClientBuilder {
-        // this.interceptor = interceptor;
+    setInterceptor<T, R>(interceptor: Interceptor<T, R>): XFClientBuilder {
+        this.interceptor = interceptor;
         return this;
     }
 

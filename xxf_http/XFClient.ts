@@ -30,7 +30,8 @@ export class XFClient {
 
     protected getDefaultObservable<T>(method: string, url: string, body?: any, headers?: Object): Observable<T> {
         let newHeaders = headers ? Object.assign({}, this.builder.headers, headers) : Object.assign({}, this.builder.headers);
-        return new AjaxObservable<AjaxResponse>(
+
+        let call: Observable<T> = new AjaxObservable<AjaxResponse>(
             {
                 method: method,
                 url: url,
@@ -41,6 +42,11 @@ export class XFClient {
             .pipe(
                 map(mapResponse)
             );
+        //拦截请求
+        if (this.builder.interceptor) {
+            return this.builder.interceptor.intercept(method, body, body, newHeaders, call);
+        }
+        return call;
     }
 
     /**
