@@ -6,19 +6,25 @@ import {XFClientBuilder} from "./XFClientBuilder";
 import {AjaxObservable, AjaxResponse} from "rxjs/internal/observable/dom/AjaxObservable";
 import {Observable} from "rxjs/index";
 import XFUtils from "./utils/XFUtils";
-import {map} from "rxjs/internal/operators";
+import {mergeMap} from "rxjs/internal/operators";
 import {HttpException} from "../xxf_base/exceptions/HttpException";
+import *as Rx from 'rxjs';
 
-const mapResponse = (x: AjaxResponse, index: number) => {
+/*
+ * @param {AjaxResponse} x
+ * @param {number} index
+ * @returns {any}
+ */
+const mapResponse = (x: AjaxResponse) => {
     if (x.status != 200) {
         let message: string = '';
         try {
             message = JSON.stringify(x);
         } catch (error) {
         }
-        throw new HttpException(x.status, message);
+        return Rx.throwError(new HttpException(x.status, message));
     }
-    return x.response;
+    return Rx.of(x.response);
 };
 
 export class XFClient {
@@ -40,7 +46,7 @@ export class XFClient {
                 timeout: this.builder.connectTimeout
             })
             .pipe(
-                map(mapResponse)
+                mergeMap(mapResponse)
             );
         //拦截请求
         if (this.builder.interceptor) {

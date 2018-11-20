@@ -4,7 +4,7 @@
  */
 import {XFClient} from "./xxf_http/XFClient";
 import {XFClientBuilder} from "./xxf_http/XFClientBuilder";
-import {Interceptor} from "./xxf_http/Interceptor";
+import {Interceptor,HttpInterceptor} from "./xxf_http/Interceptor";
 import {Exception} from './xxf_base/exceptions/Exception';
 import {HttpException} from './xxf_base/exceptions/HttpException';
 import {Stack} from './xxf_base/datastructure/Stack';
@@ -13,6 +13,7 @@ export {
     XFClient,
     XFClientBuilder,
     Interceptor,
+    HttpInterceptor,
     Exception,
     HttpException,
     Stack,
