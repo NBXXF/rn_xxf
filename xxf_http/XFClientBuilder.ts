@@ -4,6 +4,8 @@
  */
 import {XFClient} from "./XFClient";
 import {Interceptor} from "./Interceptor";
+import {Cache} from "./cache/Cache";
+import {DefaultCache} from "./cache/DefaultCache";
 
 
 export class XFClientBuilder {
@@ -18,12 +20,43 @@ export class XFClientBuilder {
      * 拦截器
      * @type {Array}
      */
-    public interceptor: any = null;
+    private interceptor: any = null;
     /**
      * 默认5s
      * @type {number}
      */
-    public connectTimeout: number = 5000;
+    private connectTimeout: number = 5000;
+
+
+    /**
+     * 缓存
+     * @type {DefaultCache}
+     */
+    private storageCache: Cache = new DefaultCache();
+
+    /**
+     * 获取超时时间
+     * @returns {number}
+     */
+    public getConnectTimeout() {
+        return this.connectTimeout;
+    }
+
+    /**
+     * 获取cache
+     * @returns {Cache}
+     */
+    public getCache(): Cache {
+        return this.storageCache;
+    }
+
+    /**
+     * 自定义cache
+     * @param {Cache} cache
+     */
+    public cache(cache: Cache) {
+        this.storageCache = cache;
+    }
 
     public constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
@@ -34,9 +67,18 @@ export class XFClientBuilder {
      * @param {Interceptor} interceptor
      * @returns {XFClientBuilder}
      */
-    setInterceptor<T, R>(interceptor: Interceptor<T, R>): XFClientBuilder {
+    setInterceptor(interceptor: Interceptor<any,any>): XFClientBuilder {
         this.interceptor = interceptor;
         return this;
+    }
+
+    /**
+     * 设置拦截器
+     * @param {Interceptor} interceptor
+     * @returns {XFClientBuilder}
+     */
+    public getInterceptor(): Interceptor<any,any> {
+        return this.interceptor;
     }
 
     /**

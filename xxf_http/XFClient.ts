@@ -6,27 +6,17 @@ import {XFClientBuilder} from "./XFClientBuilder";
 import {AjaxObservable, AjaxResponse} from "rxjs/internal/observable/dom/AjaxObservable";
 import {Observable} from "rxjs/index";
 import XFUtils from "./utils/XFUtils";
-import {mergeMap} from "rxjs/internal/operators";
+import {mergeMap, tap, catchError, map} from "rxjs/internal/operators";
 import {HttpException} from "../xxf_base/exceptions/HttpException";
 import *as Rx from 'rxjs';
+import {AjaxError} from "rxjs/internal/observable/dom/AjaxObservable";
+import {NetUtils} from "../xxf_utils/NetUtils";
 
 /*
  * @param {AjaxResponse} x
  * @param {number} index
  * @returns {any}
  */
-const mapResponse = (x: AjaxResponse) => {
-    if (x.status != 200) {
-        let message: string = '';
-        try {
-            message = JSON.stringify(x);
-        } catch (error) {
-        }
-        return Rx.throwError(new HttpException(x.status, message));
-    }
-    return Rx.of(x.response);
-};
-
 export class XFClient {
     protected builder: XFClientBuilder;
 
@@ -36,23 +26,74 @@ export class XFClient {
 
     protected getDefaultObservable<T>(method: string, url: string, body?: any, headers?: Object): Observable<T> {
         let newHeaders = headers ? Object.assign({}, this.builder.headers, headers) : Object.assign({}, this.builder.headers);
-
         let call: Observable<T> = new AjaxObservable<AjaxResponse>(
             {
                 method: method,
                 url: url,
                 body: body,
                 headers: newHeaders,
-                timeout: this.builder.connectTimeout
+                timeout: this.builder.getConnectTimeout()
             })
             .pipe(
-                mergeMap(mapResponse)
+                tap((next: AjaxResponse) => {
+                    if (next.status == 200 && "json" == next.responseType) {
+                        this.builder.getCache()
+                            .setCache(next.request, next.response);
+                    }
+                }))
+            .pipe(
+                catchError((httpErr: any, httpCaught: Observable<AjaxResponse>) => {
+                    if (httpErr instanceof AjaxError) {
+                        let ae: AjaxError = httpErr as AjaxError;
+
+                        return NetUtils.isConnected()
+                            .pipe(
+                                catchError(((err: any, caught: Observable<boolean>) => {
+                                    return Rx.throwError(httpErr);
+                                }))
+                            )
+                            .pipe(
+                                mergeMap((isConnected: boolean) => {
+                                    if (!isConnected) {
+                                        return this.builder.getCache()
+                                            .getCache(ae.request)
+                                            .pipe(
+                                                mergeMap((jsonStr: string) => {
+                                                    //输出200的返回reponse
+                                                    let cacheResponse: object = {
+                                                        status: 200,
+                                                        xhr: ae.xhr,
+                                                        request: ae.request,
+                                                        response: JSON.parse(jsonStr),
+                                                        responseType: 'json'
+                                                    };
+                                                    let result: AjaxResponse = cacheResponse as AjaxResponse;
+                                                    return Rx.of(result);
+                                                }))
+                                            .pipe(
+                                                catchError((err: any, caught: Observable<AjaxResponse>) => {
+                                                    return Rx.throwError(httpErr);
+                                                }));
+                                    }
+                                    return Rx.throwError(httpErr);
+                                }));
+                    }
+                    return Rx.throwError(httpErr);
+                }))
+            .pipe(
+                mergeMap((res: AjaxResponse) => {
+                    if (res.status != 200) {
+                        let message: string = '';
+                        try {
+                            message = JSON.stringify(res);
+                        } catch (error) {
+                        }
+                        return Rx.throwError(new HttpException(res.status, message));
+                    }
+                    return Rx.of(res.response);
+                })
             );
-        //拦截请求
-        if (this.builder.interceptor) {
-            return this.builder.interceptor.intercept(method, body, body, newHeaders, call);
-        }
-        return call;
+        return this.builder.getInterceptor() ? this.builder.getInterceptor().intercept(call) : call;
     }
 
     /**
