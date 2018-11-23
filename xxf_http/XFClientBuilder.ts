@@ -54,8 +54,9 @@ export class XFClientBuilder {
      * 自定义cache
      * @param {Cache} cache
      */
-    public cache(cache: Cache) {
+    public cache(cache: Cache): XFClientBuilder {
         this.storageCache = cache;
+        return this;
     }
 
     public constructor(baseUrl: string) {
@@ -67,7 +68,7 @@ export class XFClientBuilder {
      * @param {Interceptor} interceptor
      * @returns {XFClientBuilder}
      */
-    setInterceptor(interceptor: Interceptor<any,any>): XFClientBuilder {
+    setInterceptor(interceptor: Interceptor<any, any>): XFClientBuilder {
         this.interceptor = interceptor;
         return this;
     }
@@ -77,7 +78,7 @@ export class XFClientBuilder {
      * @param {Interceptor} interceptor
      * @returns {XFClientBuilder}
      */
-    public getInterceptor(): Interceptor<any,any> {
+    public getInterceptor(): Interceptor<any, any> {
         return this.interceptor;
     }
 

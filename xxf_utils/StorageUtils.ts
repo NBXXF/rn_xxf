@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import * as Rx from 'rxjs';
 import {map} from "rxjs/internal/operators";
+import {NullPointException} from "../xxf_base/exceptions/NullPointException";
 
 /**
  * Rxjs访问方式
@@ -22,7 +23,7 @@ export class StorageUtils {
     public static getItem(key: string): Rx.Observable<string> {
         return Rx.from<string | null>(AsyncStorage.getItem(key))
             .pipe<string>(map((x) => {
-                return String(x);
+                return x ? String(x) : Rx.throwError(new NullPointException(`getItem ${key} is null`));
             }));
     }
 

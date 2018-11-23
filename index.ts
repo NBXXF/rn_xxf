@@ -9,6 +9,7 @@ import {Cache} from "./xxf_http/cache/Cache";
 import {DefaultCache} from "./xxf_http/cache/DefaultCache";
 import {Exception} from './xxf_base/exceptions/Exception';
 import {HttpException} from './xxf_base/exceptions/HttpException';
+import {NullPointException} from './xxf_base/exceptions/NullPointException';
 import {Stack} from './xxf_base/datastructure/Stack';
 
 export {
@@ -19,6 +20,7 @@ export {
     Cache,
     HttpInterceptor,
     Exception,
+    NullPointException,
     HttpException,
     Stack,
 }
