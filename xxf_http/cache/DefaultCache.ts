@@ -25,10 +25,7 @@ export class DefaultCache implements Cache {
     }
 
     getCache(request: AjaxRequest): Observable<string> {
-        return StorageUtils.getItem(this.getToken(request))
-            .pipe(mergeMap((res: string) => {
-                return res ? Rx.of(res) : Rx.throwError(new Exception('null point excpetion', "cache is null", 'getCache'));
-            }));
+        return StorageUtils.getItem(this.getToken(request));
     }
 
 }
