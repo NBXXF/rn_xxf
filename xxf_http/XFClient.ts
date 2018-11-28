@@ -11,6 +11,7 @@ import {HttpException} from "../xxf_base/exceptions/HttpException";
 import *as Rx from 'rxjs';
 import {AjaxError} from "rxjs/internal/observable/dom/AjaxObservable";
 import {NetUtils} from "../xxf_utils/NetUtils";
+import {ResponseBody} from "./models/ResponseBody";
 
 /*
  * @param {AjaxResponse} x
@@ -25,7 +26,17 @@ export class XFClient {
     }
 
     protected getDefaultObservable<T>(method: string, url: string, body?: any, headers?: Object): Observable<T> {
-        let newHeaders = headers ? Object.assign({}, this.builder.headers, headers) : Object.assign({}, this.builder.headers);
+        let newHeaders: object = {};
+        //先拷贝全局的header
+        let globalHeaders: Array<object> = this.builder.getHeaders();
+        if (globalHeaders) {
+            for (let h of globalHeaders) {
+                Object.assign(newHeaders, h);
+            }
+        }
+        if (headers) {
+            Object.assign(newHeaders, headers);
+        }
         let call: Observable<T> = new AjaxObservable<AjaxResponse>(
             {
                 method: method,
@@ -59,12 +70,14 @@ export class XFClient {
                                             .getCache(ae.request)
                                             .pipe(
                                                 mergeMap((jsonStr: string) => {
+                                                    let body: ResponseBody = JSON.parse(jsonStr);
+                                                    body.isFromCache = true;
                                                     //输出200的返回reponse
                                                     let cacheResponse: object = {
                                                         status: 200,
                                                         xhr: ae.xhr,
                                                         request: ae.request,
-                                                        response: JSON.parse(jsonStr),
+                                                        response: body,
                                                         responseType: 'json'
                                                     };
                                                     let result: AjaxResponse = cacheResponse as AjaxResponse;

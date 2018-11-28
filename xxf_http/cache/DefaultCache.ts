@@ -17,6 +17,10 @@ export class DefaultCache implements Cache {
     }
 
     setCache(request: AjaxRequest, response: any): void {
+        //只缓存get请求
+        if (request.method && request.method != "GET") {
+            return;
+        }
         StorageUtils
             .setItem(this.getToken(request), JSON.stringify(response))
             .subscribe(function (next: any) {

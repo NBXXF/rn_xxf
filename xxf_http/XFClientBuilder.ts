@@ -15,7 +15,7 @@ export class XFClientBuilder {
      *  //默认json转换
      * @type {{Content-Type: string}}
      */
-    public headers: Object = {'Content-Type': 'application/json;charset=utf-8'};
+    private headerArrays: Array<object> = [{'Content-Type': 'application/json;charset=utf-8'}];
     /**
      * 拦截器
      * @type {Array}
@@ -88,11 +88,19 @@ export class XFClientBuilder {
      * @param value
      * @returns {XFClientBuilder}
      */
-    header(header: Object): XFClientBuilder {
+    header(header: object): XFClientBuilder {
         if (header) {
-            this.headers = Object.assign(this.headers, header);
+            this.headerArrays.push(header);
         }
         return this;
+    }
+
+    /**
+     * 获取请求头
+     * @returns {Array<Object>}
+     */
+    public getHeaders(): Array<object> {
+        return this.headerArrays;
     }
 
     /**

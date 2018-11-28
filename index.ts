@@ -7,6 +7,7 @@ import {XFClientBuilder} from "./xxf_http/XFClientBuilder";
 import {Interceptor, HttpInterceptor} from "./xxf_http/Interceptor";
 import {Cache} from "./xxf_http/cache/Cache";
 import {DefaultCache} from "./xxf_http/cache/DefaultCache";
+import {ResponseBody} from "./xxf_http/models/ResponseBody";
 import {Exception} from './xxf_base/exceptions/Exception';
 import {HttpException} from './xxf_base/exceptions/HttpException';
 import {NullPointException} from './xxf_base/exceptions/NullPointException';
@@ -18,6 +19,7 @@ export {
     Interceptor,
     DefaultCache,
     Cache,
+    ResponseBody,
     HttpInterceptor,
     Exception,
     NullPointException,
