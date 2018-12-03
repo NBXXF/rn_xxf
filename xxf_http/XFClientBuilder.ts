@@ -35,6 +35,12 @@ export class XFClientBuilder {
     private storageCache: Cache = new DefaultCache();
 
     /**
+     * 是否运行param urlencode
+     * @type {boolean}
+     */
+    private enableParamUrlEncode: boolean = false;
+
+    /**
      * 获取超时时间
      * @returns {number}
      */
@@ -112,6 +118,25 @@ export class XFClientBuilder {
         this.connectTimeout = time;
         return this;
     }
+
+    /**
+     * 设置参数是否url encode
+     * @param {boolean} encode
+     * @returns {XFClientBuilder}
+     */
+    public paramUrlEncode(encode: boolean): XFClientBuilder {
+        this.enableParamUrlEncode = encode;
+        return this;
+    }
+
+    /**
+     * 参数是否urlencode
+     * @returns {boolean}
+     */
+    public isParamUrlEncode(): boolean {
+        return this.enableParamUrlEncode;
+    }
+
 
     build(): XFClient {
         return new XFClient(this);

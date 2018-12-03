@@ -119,7 +119,7 @@ export class XFClient {
     public get<T>(path: string, param?: Map<string, any>, headers?: Object): Observable<T> {
         let url: string = XFUtils.getMergeUrl(this.builder.baseUrl, path);
         if (param) {
-            url = XFUtils.getUrlWithParam(url, param);
+            url = XFUtils.getUrlWithParam(url, param,this.builder.isParamUrlEncode());
         }
         return this.getDefaultObservable('GET', url, null, headers);
     }
@@ -147,7 +147,7 @@ export class XFClient {
     public delete<T>(path: string, param?: Map<string, any>, headers?: Object): Observable<T> {
         let url: string = XFUtils.getMergeUrl(this.builder.baseUrl, path);
         if (param) {
-            url = XFUtils.getUrlWithParam(url, param);
+            url = XFUtils.getUrlWithParam(url, param,this.builder.isParamUrlEncode());
         }
         return this.getDefaultObservable('DELETE', url, null, headers);
     }

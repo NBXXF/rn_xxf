@@ -23,28 +23,30 @@ export default class XFUtils {
      * @param {string} path
      * @returns {string}
      */
-    public static getUrlWithParam(url: string, param: Map<string, any>): string {
+    public static getUrlWithParam(url: string, param: Map<string, any>, urlEncode: boolean): string {
         let paramUrl = ``;
         if (param) {
             for (let [key, value] of param) {
-                paramUrl = `${paramUrl}&${key}=${value}`;
+                paramUrl = `${paramUrl}&${key}=${(urlEncode ? XFUtils.getUrlEncodeText(value) : value)}`;
             }
             paramUrl = paramUrl.substring(1);
         }
         return `${url}?${paramUrl}`;
     }
 
+
     /**
-     * map转换对象
-     * @param {Map<string, any>} strMap
-     * @returns {Object}
+     * url encode
+     * @param {string} txt
+     * @returns {string}
      */
-    public static mapToObj(strMap: Map<string, any>): object {
-        let obj = Object.create(null);
-        for (let [k, v] of strMap) {
-            obj[k] = v;
+    public static getUrlEncodeText(txt: string) {
+        try {
+            return encodeURIComponent(txt)
         }
-        return obj;
+        catch (error) {
+        }
+        return txt;
     }
 
 }
