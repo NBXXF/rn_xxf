@@ -29,11 +29,14 @@ export {
 
 import {BaseItemView, BaseItemProps} from './xxf_component/list/BaseItemView';
 import {SimpleBaseItemView} from './xxf_component/list/SimpleBaseItemView';
+import {XFButton,XFButtonProps} from './xxf_component/button/XFButton';
 
 export {
     BaseItemView,
     BaseItemProps,
-    SimpleBaseItemView
+    SimpleBaseItemView,
+    XFButton,
+    XFButtonProps
 }
 
 import {AndroidUtils, OnAndroidBackPressListener} from './xxf_utils/AndroidUtils';
