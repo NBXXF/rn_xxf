@@ -34,6 +34,8 @@ export interface TextStateProps {
 export interface XFButtonProps extends TouchableHighlightProps {
     backgroundStyle?: StyleProp<ButtonStateProps>;
     textStyle?: StyleProp<TextStateProps>;
+    indicatorStyle?: StyleProp<TextStateProps> | StyleProp<ViewStyle>;
+    indicatorAnimating?: boolean;
 }
 
 
@@ -59,6 +61,7 @@ export class XFButton extends React.Component<XFButtonProps, ButtonState> {
 
     static defaultProps = {
         disabled: false,
+        indicatorAnimating: false,
         backgroundStyle: {
             base: {
                 borderRadius: 8,
@@ -94,6 +97,12 @@ export class XFButton extends React.Component<XFButtonProps, ButtonState> {
         style: {
             justifyContent: 'center',
             height: 44,
+        },
+        indicatorStyle: {
+            color: '#FFF',
+            width: 16,
+            height: 16,
+            marginRight: 5,
         }
     };
 
@@ -119,8 +128,8 @@ export class XFButton extends React.Component<XFButtonProps, ButtonState> {
             _textStyles[`base`],
             _textStyles[`${(this.props.disabled ? 'disabled' : this.state.btnState)}`],
         ];
-
-
+        const {color: indicatorColor} = Object.assign({}, XFButton.defaultProps.indicatorStyle, this.props.indicatorStyle);
+        const indicatorStyle = Object.assign({}, XFButton.defaultProps.indicatorStyle, this.props.indicatorStyle);
         return (
             <TouchableHighlight style={backgroundStateStyle as ViewStyle}
                                 activeOpacity={1}
@@ -132,6 +141,11 @@ export class XFButton extends React.Component<XFButtonProps, ButtonState> {
                                 onPressIn={this.onPressedIn.bind(this)}
                                 onPressOut={this.onPressedOut.bind(this)}>
                 <View style={styles.contentContainerStyle}>
+                    {
+                        this.props.indicatorAnimating ? (
+                            <ActivityIndicator color={indicatorColor} animating={this.props.indicatorAnimating}
+                                               style={indicatorStyle as ViewStyle}/>) : null
+                    }
                     <Text style={textStateStyle as TextStyle} numberOfLines={1}>
                         {this.props.children}
                     </Text>
