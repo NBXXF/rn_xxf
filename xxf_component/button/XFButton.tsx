@@ -124,7 +124,6 @@ export class XFButton extends React.Component<XFButtonProps, ButtonState> {
 
         const _textStyles: any = this.props.textStyle!;
         const textStateStyle = [
-            this.props.textStyle,
             _textStyles[`base`],
             _textStyles[`${(this.props.disabled ? 'disabled' : this.state.btnState)}`],
         ];

@@ -1,6 +1,6 @@
 {
   "name": "rn_xxf",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "description": "rn_xxf",
   "main": "./index.ts",
   "types": "/index.d.ts",
