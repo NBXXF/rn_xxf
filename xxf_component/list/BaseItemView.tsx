@@ -30,14 +30,12 @@ export abstract class BaseItemView<T, P extends BaseItemProps<T>, S>
 
     protected itemInfo: ListRenderItemInfo<T>;
     protected itemClick: any;
-    protected itemContainerStyle?: StyleProp<ViewStyle>;
 
 
     constructor(props: P) {
         super(props);
         this.itemInfo = props.itemInfo;
         this.itemClick = props.itemClick;
-        this.itemContainerStyle = props.itemContainerStyle;
     }
 
     /**
@@ -46,7 +44,7 @@ export abstract class BaseItemView<T, P extends BaseItemProps<T>, S>
      */
     public render() {
         return (
-            <TouchableOpacity style={this.itemContainerStyle}
+            <TouchableOpacity style={this.props.itemContainerStyle}
                               onPress={() => this.onItemClick(this.itemInfo.index, this.itemInfo.item, this.itemInfo)}>
                 {this.onRenderItem(this.itemInfo.index, this.itemInfo.item, this.itemInfo)}
             </TouchableOpacity>
