@@ -1,10 +1,10 @@
 import React from "react";
-import {ListRenderItemInfo, StyleProp, TouchableOpacity, ViewStyle} from "react-native";
+import {ListRenderItemInfo, StyleProp, TouchableOpacity, TouchableOpacityProps, ViewStyle} from "react-native";
 
 /**
  * 参数约定
  */
-export interface BaseItemProps<T> {
+export interface BaseItemProps<T>  extends TouchableOpacityProps {
     /**
      * items数据
      */
@@ -14,10 +14,6 @@ export interface BaseItemProps<T> {
      */
     itemClick?: (index: number, t: T, itemInfo: ListRenderItemInfo<T>) => void;
 
-    /**
-     * item布局的根rootstyle
-     */
-    itemContainerStyle?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -44,7 +40,7 @@ export abstract class BaseItemView<T, P extends BaseItemProps<T>, S>
      */
     public render() {
         return (
-            <TouchableOpacity style={this.props.itemContainerStyle}
+            <TouchableOpacity {...this.props}
                               onPress={() => this.onItemClick(this.itemInfo.index, this.itemInfo.item, this.itemInfo)}>
                 {this.onRenderItem(this.itemInfo.index, this.itemInfo.item, this.itemInfo)}
             </TouchableOpacity>
