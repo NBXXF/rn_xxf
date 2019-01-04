@@ -16,6 +16,9 @@ import {
 
 const styles = StyleSheet.create({
     container: {
+        flexDirection: 'row',
+    },
+    contentContainer: {
         flex: 1,
         flexDirection: 'row',
     },
@@ -57,15 +60,18 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        return <TouchableOpacity style={styles.container} onPress={() => {
+
+        return (<TouchableOpacity style={styles.container} onPress={() => {
             //获取焦点
             let textInput: TextInput | null = this.refArray[this.state.inputIndex].current;
             if (textInput) {
                 textInput.focus();
             }
         }}>
-            {this.renderInputCell()}
-        </TouchableOpacity>
+            <View style={styles.contentContainer}>
+                {this.renderInputCell()}
+            </View>
+        </TouchableOpacity>);
     }
 
     /**
