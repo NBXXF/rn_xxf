@@ -4,7 +4,14 @@
  * @Company Beijing dsb
  */
 import * as React from "react";
-import {TextInput, StyleSheet, View, NativeSyntheticEvent, TextInputKeyPressEventData} from "react-native";
+import {
+    TextInput,
+    StyleSheet,
+    View,
+    NativeSyntheticEvent,
+    TextInputKeyPressEventData,
+    TouchableOpacity
+} from "react-native";
 
 
 const styles = StyleSheet.create({
@@ -50,9 +57,15 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        return <View style={styles.container}>
+        return <TouchableOpacity style={styles.container} onPress={() => {
+            //获取焦点
+            let textInput: TextInput | null = this.refArray[this.state.inputIndex].current;
+            if (textInput) {
+                textInput.focus();
+            }
+        }}>
             {this.renderInputCell()}
-        </View>
+        </TouchableOpacity>
     }
 
     /**
