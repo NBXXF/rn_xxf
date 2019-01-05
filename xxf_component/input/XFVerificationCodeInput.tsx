@@ -8,10 +8,12 @@ import {
     TextInput,
     StyleSheet,
     View,
+    Text,
     NativeSyntheticEvent,
     TextInputKeyPressEventData,
     TouchableOpacity
 } from "react-native";
+import {XFInputErrorNoticeProps} from "./XFInputErrorNoticeProps";
 
 
 const styles = StyleSheet.create({
@@ -29,10 +31,19 @@ const styles = StyleSheet.create({
         borderBottomColor: 'rgb(41,204,123)',
         borderBottomWidth: 1,
         marginHorizontal: 8,
+    },
+    errorContainer: {
+        flexDirection: 'row',
+    },
+    error: {
+        marginTop: 6,
+        fontSize: 12,
+        flex: 1,
+        color: 'rgb(230,92,83)',
     }
 });
 
-interface Props {
+interface Props extends XFInputErrorNoticeProps {
     /**
      * 输入改变
      * @param value
@@ -68,8 +79,13 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
                 textInput.focus();
             }
         }}>
-            <View style={styles.contentContainer}>
-                {this.renderInputCell()}
+            <View style={{flex: 1}}>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={styles.contentContainer}>
+                        {this.renderInputCell()}
+                    </View>
+                </View>
+                {this.renderErrorCell()}
             </View>
         </TouchableOpacity>);
     }
@@ -152,5 +168,24 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
                     });
                 }}/>;
         });
+    }
+
+    /**
+     * 渲染错误展示
+     */
+    private renderErrorCell(): React.ReactNode {
+        if (this.props.error) {
+            if (typeof this.props.error == 'string') {
+                return (<TouchableOpacity
+                    style={styles.errorContainer}
+                    onPress={this.props.onErrorClick}>
+                    <Text style={styles.error}>
+                        {String(this.props.error)}
+                    </Text>
+                </TouchableOpacity>);
+            }
+            return this.props.error;
+        }
+        return null;
     }
 }
