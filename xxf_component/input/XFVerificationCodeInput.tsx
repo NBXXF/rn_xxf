@@ -146,12 +146,20 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
                 maxLength={1}
                 onKeyPress={(e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
                     if (e.nativeEvent.key == 'Backspace') {
-                        this.state.inputArray[index] = '';
-                        this.focusForward(() => {
-                            if (this.props.onChangeText) {
-                                this.props.onChangeText(this.state.inputArray.join(''));
-                            }
-                        });
+                        if (index == this.LIMIT_LENGTH - 1 && this.state.inputArray[this.LIMIT_LENGTH - 1]) {
+                            this.focusCell(this.LIMIT_LENGTH - 1, () => {
+                                if (this.props.onChangeText) {
+                                    this.props.onChangeText(this.state.inputArray.join(''));
+                                }
+                            });
+                        } else {
+                            this.state.inputArray[index] = '';
+                            this.focusForward(() => {
+                                if (this.props.onChangeText) {
+                                    this.props.onChangeText(this.state.inputArray.join(''));
+                                }
+                            });
+                        }
                     }
                 }}
                 onChangeText={(text: string) => {

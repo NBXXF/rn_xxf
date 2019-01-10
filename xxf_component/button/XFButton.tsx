@@ -12,7 +12,7 @@ import {
     ViewStyle,
     StyleProp,
     TextProps,
-    TouchableHighlightProps, TextStyle,
+    TouchableHighlightProps, TextStyle, GestureResponderEvent,
 } from 'react-native';
 
 
@@ -135,8 +135,8 @@ export class XFButton extends React.Component<XFButtonProps, ButtonState> {
                                 onPress={this.props.onPress}
                                 disabled={this.props.disabled}
                                 underlayColor={underlayColor}
-                                onShowUnderlay={this.onPressedIn.bind(this)}
-                                onHideUnderlay={this.onPressedOut.bind(this)}
+                                onShowUnderlay={this.props.onShowUnderlay}
+                                onHideUnderlay={this.props.onHideUnderlay}
                                 onPressIn={this.onPressedIn.bind(this)}
                                 onPressOut={this.onPressedOut.bind(this)}>
                 <View style={styles.contentContainerStyle}>
@@ -153,15 +153,23 @@ export class XFButton extends React.Component<XFButtonProps, ButtonState> {
         );
     }
 
-    protected onPressedIn() {
+    protected onPressedIn(event: GestureResponderEvent) {
         this.setState({
             btnState: 'pressed',
+        }, () => {
+            if (this.props.onPressIn) {
+                this.props.onPressIn(event);
+            }
         });
     }
 
-    protected onPressedOut() {
+    protected onPressedOut(event: GestureResponderEvent) {
         this.setState({
             btnState: 'normal',
+        }, () => {
+            if (this.props.onPressOut) {
+                this.props.onPressOut(event);
+            }
         });
     }
 
