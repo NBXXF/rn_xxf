@@ -1,10 +1,17 @@
 import React from "react";
-import {ListRenderItemInfo, StyleProp, TouchableOpacity, TouchableOpacityProps, ViewStyle} from "react-native";
+import {
+    ListRenderItemInfo,
+    StyleProp,
+    TouchableHighlight, TouchableHighlightProps,
+    TouchableOpacity,
+    TouchableOpacityProps,
+    ViewStyle
+} from "react-native";
 
 /**
  * 参数约定
  */
-export interface BaseItemProps<T>  extends TouchableOpacityProps {
+export interface BaseItemProps<T>  extends TouchableHighlightProps {
     /**
      * items数据
      */
@@ -35,15 +42,16 @@ export abstract class BaseItemView<T, P extends BaseItemProps<T>, S>
     }
 
     /**
-     * 包装点击事件
+     * 包装点击事件,默认 underlayColor:#E5E5E5
      * @returns {any}
      */
     public render() {
         return (
-            <TouchableOpacity {...this.props}
-                              onPress={() => this.onItemClick(this.itemInfo.index, this.itemInfo.item, this.itemInfo)}>
+            <TouchableHighlight {...this.props}
+                                underlayColor={this.props.underlayColor ? this.props.underlayColor : '#E5E5E5'}
+                                onPress={() => this.onItemClick(this.itemInfo.index, this.itemInfo.item, this.itemInfo)}>
                 {this.onRenderItem(this.itemInfo.index, this.itemInfo.item, this.itemInfo)}
-            </TouchableOpacity>
+            </TouchableHighlight>
         );
     }
 
