@@ -255,7 +255,6 @@ class SingleItem extends React.Component<ItemProps, ItemState> {
         if (nextProps.itemText !== this.state.itemText) {
             this.setState({itemText: nextProps.itemText});
         }
-        console.log('nextProps.itemText = '+nextProps.itemText + '  this.state.itemText = '+this.state.itemText);
         return nextProps.itemText !== this.state.itemText;
     }
 
