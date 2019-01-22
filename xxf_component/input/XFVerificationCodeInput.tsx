@@ -10,12 +10,21 @@ import {
     View,
     Text,
     Platform,
+    Dimensions,
     NativeSyntheticEvent,
     TextInputKeyPressEventData,
     TouchableOpacity
 } from "react-native";
 import {XFInputErrorNoticeProps} from "./XFInputErrorNoticeProps";
+import AlertModal from "../../../../react_native/src/common/widget/modal/alert/AlertModal";
+import {string} from "prop-types";
 
+const CUSOR_ON_TEXT: string = '|';
+const CUSOR_BLUR_TEXT: string = '';
+const SCREE_WIDTH: number = Dimensions.get('window').width;
+const SPACING_WIDTH: number = 16;
+const LIMIT_LENGTH: number = 6;
+const CUSOR_BLUR_TIME: number = 600;
 
 const styles = StyleSheet.create({
     container: {
@@ -26,11 +35,25 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     inputCell: {
-        flex: 1,
+        // flex: 1,
         height: 44,
-        textAlign: 'center',
         borderBottomColor: 'rgb(41,204,123)',
         borderBottomWidth: 1,
+        marginRight: SPACING_WIDTH,
+    },
+    inputCellText: {
+        flex: 1,
+        fontSize: 16,
+        color: 'rgba(0, 0, 0, .8)',
+        lineHeight: 44,
+        textAlign: 'center',
+    },
+    inputAll: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: 100,
+        height: 44,
         marginHorizontal: 8,
     },
     errorContainer: {
@@ -45,6 +68,8 @@ const styles = StyleSheet.create({
 });
 
 interface Props extends XFInputErrorNoticeProps {
+
+    contentText: string;
     /**
      * 输入改变
      * @param value
@@ -54,41 +79,85 @@ interface Props extends XFInputErrorNoticeProps {
 
 interface State {
     inputIndex: number;
+    contentText: string;
+    cusorText: string;
     inputArray: Array<string>;
 }
 
-type RefInput = React.RefObject<TextInput>;
-
 export class XFVerificationCodeInput extends React.Component<Props, State> {
-    private LIMIT_LENGTH: number = 6;
-    private refArray: Array<RefInput> = new Array(this.LIMIT_LENGTH);
+    private cusorTimer: number = 0;
+    private textInput: React.RefObject<TextInput> = React.createRef();
 
     constructor(props: Props) {
         super(props);
         this.state = {
             inputIndex: 0,
+            contentText: '',
+            cusorText: CUSOR_ON_TEXT,
             inputArray: ['', '', '', '', '', ''],
         }
     }
-    
+
     componentDidMount(): void {
-        Platform.OS === 'android' && setTimeout(() => {
-            if (this.refArray && this.refArray[this.state.inputIndex] && this.refArray[this.state.inputIndex].current) {
-                this.refArray[this.state.inputIndex].current.focus();
+        if (Platform.OS === 'android') {
+            setTimeout(() => {
+                this.textInput.current && this.textInput.current.focus();
+
+            }, Math.ceil(CUSOR_BLUR_TIME / 3));
+        }
+    }
+
+    shouldComponentUpdate(nextProps: Readonly<Props>,
+                          nextState: Readonly<State>,
+                          nextContext: any): boolean {
+
+
+        if (nextProps.contentText != this.state.contentText) {
+            this.setState({
+                inputArray: nextProps.contentText.split(''),
+                contentText: nextProps.contentText,
+                inputIndex: nextProps.contentText.length
+            });
+            if (nextProps.contentText.length >= LIMIT_LENGTH) {
+                this.textInput.current && this.textInput.current.blur();
             }
-        }, 300);
+        }
+
+        return nextProps.contentText !== this.state.contentText || nextState.cusorText !== this.state.cusorText;
     }
 
     render(): React.ReactNode {
 
-        return (<TouchableOpacity style={styles.container} onPress={() => {
+        let {contentText} = this.state;
+
+        return (<TouchableOpacity style={styles.container}
+                                  activeOpacity={1}
+                                  onPress={() => {
             //获取焦点
-            let textInput: TextInput | null = this.refArray[this.state.inputIndex].current;
-            if (textInput) {
-                textInput.focus();
+            if (this.textInput && this.textInput.current) {
+                this.textInput.current.focus();
             }
         }}>
-            <View style={{flex: 1}}>
+
+            <TextInput
+                autoFocus={true}
+                style={styles.inputAll}
+                keyboardType={'numeric'}
+                ref={this.textInput}
+                maxLength={LIMIT_LENGTH}
+                onKeyPress={(e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {}}
+                onChangeText={(text: string) => {
+
+                    if (this.props.onChangeText) {
+                        this.props.onChangeText(text);
+                    }
+
+                }}
+                onFocus={this.startCusor.bind(this)}
+                onBlur={this.endCusor.bind(this)}
+            />
+
+            <View style={{flex: 1,backgroundColor: '#fff'}}>
                 <View style={{flexDirection: 'row'}}>
                     <View style={styles.contentContainer}>
                         {this.renderInputCell()}
@@ -99,99 +168,45 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
         </TouchableOpacity>);
     }
 
-    /**
-     * 获取下一个焦点
-     */
-    private focusNext(callback?: () => void) {
-        if (this.state.inputIndex < this.LIMIT_LENGTH - 1) {
-            this.focusCell(this.state.inputIndex + 1, callback);
-        }
+    private startCusor(): void {
+        this.endCusor();
+
+        // if (this.checkShoudHasCusor()) {
+
+            this.cusorTimer = setInterval(() => {
+                this.setState({cusorText: this.state.cusorText === CUSOR_ON_TEXT ? CUSOR_BLUR_TEXT : CUSOR_ON_TEXT})
+            }, CUSOR_BLUR_TIME);
+        // }
     }
 
-    /**
-     * 获取上一个焦点
-     */
-    private focusForward(callback?: () => void) {
-        if (this.state.inputIndex > 0) {
-            this.focusCell(this.state.inputIndex - 1, callback);
-        }
+    private endCusor(): void {
+        this.cusorTimer && clearInterval(this.cusorTimer);
     }
 
-    /**
-     * 获取焦点
-     * @param index
-     * @param callback
-     */
-    private focusCell(index: number, callback?: () => void) {
-        if (index < 0 || index >= this.LIMIT_LENGTH) {
-            return;
+    private checkShoudHasCusor(): boolean {
+        if (this.state.contentText.length >= LIMIT_LENGTH) {
+            this.endCusor();
         }
-        this.state.inputArray[index] = '';
-        this.setState({
-            inputIndex: index,
-            inputArray: this.state.inputArray,
-        }, () => {
-            if (Platform.OS === 'ios') {
-                let textInput: TextInput | null = this.refArray[index].current;
-                if (textInput) {
-                    textInput.focus();
-                }
-            }
-            if (callback) {
-                callback();
-            }
-        });
-        if (Platform.OS === 'android') {
-            let textInput: TextInput | null = this.refArray[index].current;
-            if (textInput) {
-                textInput.focus();
-            }
-        }
+        return this.state.contentText.length < LIMIT_LENGTH;
     }
 
     private renderInputCell(): React.ReactNode {
-        return this.state.inputArray.map((item: string, index: number) => {
-            this.refArray[index] = React.createRef();
-            return <TextInput
-                key={index}
-                editable={this.state.inputIndex == index}
-                autoFocus={true}
-                style={styles.inputCell}
-                keyboardType={'numeric'}
-                ref={this.refArray[index]}
-                defaultValue={String(item)}
-                maxLength={1}
-                onKeyPress={(e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-                    if (e.nativeEvent.key == 'Backspace') {
-                        if (index == this.LIMIT_LENGTH - 1 && this.state.inputArray[this.LIMIT_LENGTH - 1]) {
-                            this.focusCell(this.LIMIT_LENGTH - 1, () => {
-                                if (this.props.onChangeText) {
-                                    this.props.onChangeText(this.state.inputArray.join(''));
-                                }
-                            });
-                        } else {
-                            this.state.inputArray[index] = '';
-                            this.focusForward(() => {
-                                if (this.props.onChangeText) {
-                                    this.props.onChangeText(this.state.inputArray.join(''));
-                                }
-                            });
-                        }
-                    }
-                }}
-                onChangeText={(text: string) => {
-                    this.state.inputArray[index] = text;
-                    this.setState({
-                        inputArray: this.state.inputArray,
-                    }, () => {
-                        if (this.props.onChangeText) {
-                            this.props.onChangeText(this.state.inputArray.join(''));
-                        }
-                        if (text) {
-                            this.focusNext();
-                        }
-                    });
-                }}/>;
+
+        let {contentText, cusorText, inputArray} = this.state;
+
+        let allNodeArray: Array<any> = [1, 2, 3, 4, 5, 6];
+
+        return allNodeArray.map((item: string, index: number) => {
+
+            let cellValue: string = contentText.length === index ? cusorText : '';
+            if (index < contentText.length) {
+                cellValue = inputArray[index] ? inputArray[index] : '';
+            } else if (index > contentText.length) {
+                cellValue = '';
+            }
+
+            return <SingleItem key={index}
+                               itemText={cellValue}/>;
         });
     }
 
@@ -212,5 +227,43 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
             return this.props.error;
         }
         return null;
+    }
+}
+
+interface ItemProps {
+
+    itemText: string;
+}
+
+interface ItemState {
+
+    itemText: string;
+}
+
+class SingleItem extends React.Component<ItemProps, ItemState> {
+    private cusorTimer: number = 0;
+    private textInput: React.RefObject<TextInput> = React.createRef();
+
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            itemText: this.props.itemText,
+        }
+    }
+
+    shouldComponentUpdate(nextProps: Readonly<ItemProps>, nextState: Readonly<ItemState>, nextContext: any): boolean {
+        if (nextProps.itemText !== this.state.itemText) {
+            this.setState({itemText: nextProps.itemText});
+        }
+        console.log('nextProps.itemText = '+nextProps.itemText + '  this.state.itemText = '+this.state.itemText);
+        return nextProps.itemText !== this.state.itemText;
+    }
+
+
+    render(): React.ReactNode {
+        let {itemText} = this.state;
+        return <View style={[styles.inputCell,{width: Math.floor((SCREE_WIDTH - 2 * 2 * SPACING_WIDTH - (LIMIT_LENGTH - 1) * SPACING_WIDTH) / LIMIT_LENGTH)}]}>
+                <Text style={styles.inputCellText}>{itemText}</Text>
+            </View>;
     }
 }
