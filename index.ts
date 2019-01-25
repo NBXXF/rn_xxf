@@ -30,14 +30,17 @@ export {
 import {BaseItemView, BaseItemProps} from './xxf_component/list/BaseItemView';
 import {SimpleBaseItemView} from './xxf_component/list/SimpleBaseItemView';
 import {XFButton, XFButtonProps} from './xxf_component/button/XFButton';
+import {XFSwitch} from './xxf_component/button/XFSwitch';
 import {XFVerificationCodeInput} from './xxf_component/input/XFVerificationCodeInput';
 import {XFInputErrorNoticeProps} from './xxf_component/input/XFInputErrorNoticeProps';
+
 
 export {
     BaseItemView,
     BaseItemProps,
     SimpleBaseItemView,
     XFButton,
+    XFSwitch,
     XFButtonProps,
     XFVerificationCodeInput,
     XFInputErrorNoticeProps,
