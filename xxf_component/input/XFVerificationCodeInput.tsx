@@ -123,7 +123,7 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
             }
         }
 
-        return nextProps.contentText !== this.state.contentText || nextState.cusorText !== this.state.cusorText;
+        return nextProps.error !== this.props.error || nextProps.contentText !== this.state.contentText || nextState.cusorText !== this.state.cusorText;
     }
 
     render(): React.ReactNode {
