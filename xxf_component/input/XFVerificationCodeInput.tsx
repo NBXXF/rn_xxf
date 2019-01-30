@@ -135,7 +135,11 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
                                   onPress={() => {
             //获取焦点
             if (this.textInput && this.textInput.current) {
-                this.textInput.current.focus();
+                
+                Platform.OS === 'android' && this.textInput.current.blur();
+                InteractionManager.runAfterInteractions(() => {
+                    this.textInput && this.textInput.current && this.textInput.current.focus();
+                });
             }
         }}>
 
