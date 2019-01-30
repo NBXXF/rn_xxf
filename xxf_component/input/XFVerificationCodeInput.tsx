@@ -104,7 +104,7 @@ export class XFVerificationCodeInput extends React.Component<Props, State> {
             setTimeout(() => {
                 this.textInput.current && this.textInput.current.focus();
 
-            }, Math.ceil(CUSOR_BLUR_TIME / 2));
+            }, Math.ceil(CUSOR_BLUR_TIME / 1.5));
         }
     }
 
