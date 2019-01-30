@@ -33,6 +33,7 @@ import {XFButton, XFButtonProps} from './xxf_component/button/XFButton';
 import {XFSwitch} from './xxf_component/button/XFSwitch';
 import {XFVerificationCodeInput} from './xxf_component/input/XFVerificationCodeInput';
 import {XFInputErrorNoticeProps} from './xxf_component/input/XFInputErrorNoticeProps';
+import {XFTabBar} from './xxf_component/tab/XFTabBar';
 
 
 export {
@@ -44,6 +45,7 @@ export {
     XFButtonProps,
     XFVerificationCodeInput,
     XFInputErrorNoticeProps,
+    XFTabBar,
 }
 
 import {AndroidUtils, OnAndroidBackPressListener} from './xxf_utils/AndroidUtils';
