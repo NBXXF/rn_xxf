@@ -15,7 +15,6 @@ export default StyleSheet.create({
     paddingRight: 20,
   },
   tabs: {
-    marginTop: 15,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
