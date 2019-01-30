@@ -13,7 +13,8 @@ import {
     Dimensions,
     NativeSyntheticEvent,
     TextInputKeyPressEventData,
-    TouchableOpacity
+    TouchableOpacity,
+    InteractionManager
 } from "react-native";
 import {XFInputErrorNoticeProps} from "./XFInputErrorNoticeProps";
 import AlertModal from "../../../../react_native/src/common/widget/modal/alert/AlertModal";
