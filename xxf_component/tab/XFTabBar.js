@@ -74,6 +74,7 @@ export type Props = {
 type State = {
     renderUnderline: boolean,
     tabScrollValue: number,
+    disableTabs: Array<number>,
 };
 
 type LayoutType = {
@@ -126,6 +127,7 @@ export class XFTabBar extends Component<Props, State> {
     state = {
         renderUnderline: false,
         tabScrollValue: 0,
+        disableTabs: [],
     };
 
     componentDidMount() {
@@ -337,6 +339,7 @@ export class XFTabBar extends Component<Props, State> {
                     this.props.tabMargin && {marginLeft: this.props.tabMargin},
                     this.props.tabStyles.tab,
                 ]}
+                disabled={(this.state.disableTabs && this.state.disableTabs.indexOf(page)) >= 0 ? true : false}
                 key={page}
                 onPress={onPressHandler}
                 onLayout={onTabLayout}
@@ -405,5 +408,16 @@ export class XFTabBar extends Component<Props, State> {
                 </ScrollView>
             </View>
         );
+    }
+
+    /**
+     * 设置禁用的tabs
+     * @param disableTabs
+     * @param callback
+     */
+    setDisableTabs(disableTabs: Array<number>, callback?: () => void) {
+        this.setState({
+            disableTabs: disableTabs,
+        }, callback);
     }
 }
