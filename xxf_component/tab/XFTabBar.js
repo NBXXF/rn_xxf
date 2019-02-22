@@ -271,7 +271,7 @@ export class XFTabBar extends Component<Props, State> {
 
             if (offset + tabWidth + nextTabWidth + 2 * marginValue >= scrollWidth) {
                 if (isLast) {
-                    scrollOffset = offset - (tabContainerWidth - (tabWidth + marginValue));
+                    scrollOffset = offset - (tabContainerWidth - (tabWidth + 3 * marginValue));
                 } else {
                     // 1.3 - is a magical constant
                     // actually it is just 1.3 of margins. If to place 2
