@@ -6,7 +6,7 @@ import {XFClientBuilder} from "./XFClientBuilder";
 import {AjaxObservable, AjaxResponse} from "rxjs/internal/observable/dom/AjaxObservable";
 import {Observable} from "rxjs/index";
 import XFUtils from "./utils/XFUtils";
-import {mergeMap, tap, catchError, map} from "rxjs/internal/operators";
+import {mergeMap, tap, catchError, map,timeout} from "rxjs/internal/operators";
 import {HttpException} from "../xxf_base/exceptions/HttpException";
 import *as Rx from 'rxjs';
 import {AjaxError} from "rxjs/internal/observable/dom/AjaxObservable";
@@ -46,6 +46,10 @@ export class XFClient {
                 headers: newHeaders,
                 timeout: this.builder.getConnectTimeout()
             })
+            //fix android timeout useless
+            .pipe(
+                timeout(this.builder.getConnectTimeout()+1)
+            )
             .pipe(
                 tap((next: AjaxResponse) => {
                     if (next.status == 200 && "json" == next.responseType) {
